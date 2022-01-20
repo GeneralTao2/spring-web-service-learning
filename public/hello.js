@@ -335,8 +335,11 @@ function insertEmplyeeToCard(employee) {
             <a href="${employee._links.employees.href}" class="card-link">employees</a>
         </div>
     `;
-    for (var i = 0; i < employee.orders.length; i++) {
-        insertOrderToCard(card, employee.orders[i], i);
+    console.log(employee);
+    if(employee.orders) {
+        for (var i = 0; i < employee.orders.length; i++) {
+            insertOrderToCard(card, employee.orders[i], i);
+        }
     }
     return card;
 }
@@ -383,7 +386,6 @@ function btnAddOrderEventListener(event) {
         })
             .then((response) => response.json(), (error) => console.log(error))
             .then((data) => {
-                console.log(data);
                 insertOrderToCard(addOrderModal.currentCard, data.orders.at(-1), addOrderModal.currentCard.querySelector('.list-group').childElementCount);
                 addOrderModal.hide();
             },
@@ -396,7 +398,16 @@ function btnAddOrderEventListener(event) {
         })
             .then((response) => response.json(), (error) => console.log(error))
             .then((data) => {
+                console.log(data);
+                var order = Array.from(document.querySelectorAll('.order-text.id-holder'))
+                    .find(el => el.textContent === orderId);
+                console.log(order);
+                if(order) {
+                    var orderList = order.parentElement.parentElement;
+                    orderList.removeChild(order.parentElement);
+                }
                 insertOrderToCard(addOrderModal.currentCard, data.orders.at(-1), addOrderModal.currentCard.querySelector('.list-group').childElementCount);
+                
                 addOrderModal.hide();
             },
                 (error) => console.log(error)

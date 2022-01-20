@@ -50,8 +50,9 @@ class EmployeeController {
 
     @PostMapping("/employees")
     ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee) {
+        Employee savedEmployee = employeeRepository.save(newEmployee);
 
-        EntityModel<Employee> entityModel = assembler.toModel(employeeRepository.save(newEmployee));
+        EntityModel<Employee> entityModel = assembler.toModel(savedEmployee);
 
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
@@ -126,6 +127,7 @@ class EmployeeController {
         Employee employee = employeeRepository
                 .findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
+        /* TODO: index out of bounds */
         Order order = employee.getOrders().get(orderIndex);
         employee.removeOrder(order);
         employeeRepository.save(employee);
